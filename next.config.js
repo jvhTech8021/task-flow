@@ -32,8 +32,8 @@ const nextConfig = {
             value: '1; mode=block',
           },
           {
-            key: 'Content-Security-Policy',
-            value: cspHeader.replace(/\n/g, ''),
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'self' https://*.copilot.app/"
           }
         ],
       },
