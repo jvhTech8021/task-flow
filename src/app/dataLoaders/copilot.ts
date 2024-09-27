@@ -9,6 +9,8 @@ export default async function initializeCoPilot({
   searchParams: any;
 }) {
 
+  console.log('Initializing copilot')
+
   const copilot = copilotApi({
 	  apiKey: `${process.env.COPILOT_API_KEY}`,
   });
