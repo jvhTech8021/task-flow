@@ -10,7 +10,7 @@ export default async function initializeCoPilot({
 }) {
 
   const copilot = copilotApi({
-	  apiKey: process.env.NEXT_PUBLIC_COPILOT_API_KEY,
+	  apiKey: `${process.env.NEXT_PUBLIC_COPILOT_API_KEY}`,
   });
 
 //   const test = await copilot.listClients({})
