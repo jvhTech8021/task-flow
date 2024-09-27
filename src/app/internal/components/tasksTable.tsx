@@ -8,28 +8,49 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button"
+
 
 // Create the TasksTable component
-const TasksTable = () => {
+const TasksTable = ({ notifications }: { notifications: any }) => {
+      console.log("notifications", notifications);
+
     return (
-        <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+        <Table className="">
             <TableHeader>
-                <TableRow>
-                    <TableHead className="w-[100px]">Invoice</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
+                <TableRow className="">
+                    {/* <TableHead className="border-2">Client</TableHead> */}
+                    <TableHead className="border-2">Name</TableHead>
+                    <TableHead className="border-2">Email</TableHead>
+                    <TableHead className="border-2">Company</TableHead>
+                    <TableHead className="border-2">Notification</TableHead>
+                    <TableHead className="border-2">Details</TableHead>
+                    <TableHead className="border-2">Created At</TableHead>
+                    <TableHead className="border-2">Reminders</TableHead>
+                    {/* LETS GET COMPANY NAME TOO */}
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium">INV001</TableCell>
-                    <TableCell>Paid</TableCell>
-                    <TableCell>Credit Card</TableCell>
-                    <TableCell className="text-right">$250.00</TableCell>
-                </TableRow>
+                {notifications.map((notification: any, index: number) => {
+                    // Use regex to extract the task name from notification.details
+                    const taskName = notification.details?.match(/(?<=‘)(.*?)(?=’)/)?.[0];
+
+                    return (
+                        <TableRow key={index} className="">
+                            <TableCell>{notification.Name}</TableCell>
+                            <TableCell>{notification.Email}</TableCell>
+                            <TableCell>{notification.Company.name}</TableCell>
+                            <TableCell>{notification.Notification}</TableCell>
+                            <TableCell>{taskName || notification.details}</TableCell> {/* Display taskName if found, otherwise show full details */}
+                            <TableCell>{notification.CreatedAt}</TableCell>
+                            <TableCell>
+                                <Button>Remind</Button>
+                            </TableCell>
+                        </TableRow>
+                    );
+                })}
             </TableBody>
+
         </Table>
     );
 };
