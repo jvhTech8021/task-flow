@@ -8,7 +8,7 @@ export default async function initializeCoPilot({
   searchParams: any;
 }) {
   const copilot = copilotApi({
-	  apiKey: process.env.COPILOT_API_KEY,
+	  apiKey: `${process.env.COPILOT_API_KEY}`,
   });
 
   const test = await copilot.listClients({})
