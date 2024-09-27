@@ -31,10 +31,10 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: "Content-Security-Policy",
-            value: "frame-ancestors 'self' https://*.copilot.app/"
-          }
+          // {
+          //   key: "Content-Security-Policy",
+          //   value: "frame-ancestors 'self' https://*.copilot.app/"
+          // }
         ],
       },
     ];
