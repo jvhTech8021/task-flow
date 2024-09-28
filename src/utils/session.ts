@@ -9,8 +9,10 @@ import { need } from '@/utils/need';
 export async function getSession(searchParams: SearchParams) {
   // apiKey needs to be defined inside the function so we get the
   // error boundary page instead of a vercel error.
+  console.log('getting here')
   const apiKey = need<string>(
     process.env.COPILOT_API_KEY);
+    
 
   const copilot = copilotApi({
     apiKey: apiKey,
