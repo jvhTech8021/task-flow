@@ -17,10 +17,11 @@ export function middleware(request: NextRequest) {
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-    frame-ancestors https://dashboard.copilot.com/ https://*.copilot.app/;
+    frame-ancestors https://dashboard.copilot.com/ https://*.copilot.app/ https://portal.windstonefinancial.com/;
     block-all-mixed-content;
     upgrade-insecure-requests;
 `;
+
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
     .replace(/\s{2,}/g, ' ')
