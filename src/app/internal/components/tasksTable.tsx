@@ -16,7 +16,14 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
     // Maintain loading state for each notification
     const [loading, setLoading] = useState<{ [key: number]: boolean }>({});
 
-    const handleSendReminder = async (index: number, details: {}) => {
+    const handleSendReminder = async (index: number, details: {
+        name: string,
+        email: string,
+        company: string,
+        body: string,
+        createdAt: string,
+        notification: string
+    }) => {
         // Set loading only for the current row
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
 

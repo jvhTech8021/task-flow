@@ -5,7 +5,7 @@ import { getSession } from '@/utils/session';
 
 // In-memory cache
 let cachedNotifications: any[] = [];
-let lastUpdated = null;
+let lastUpdated: any = null;
 
 // Set cache expiration time (e.g., 5 minutes)
 const CACHE_EXPIRATION = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
 }
 
 // Function to fetch fresh data
-async function fetchFreshData(copilot) {
+async function fetchFreshData(copilot: any) {
   const clients = await copilot.listClients({});
   const clientNotificationsMap: any[] = [];
 
@@ -56,7 +56,7 @@ async function fetchFreshData(copilot) {
       const batch = clients.data.slice(i, i + BATCH_SIZE);
 
       await Promise.all(
-        batch.map(async (client) => {
+        batch.map(async (client: any) => {
           const clientNotifications = await copilot.listNotifications({
             recipientId: client.id,
             includeRead: true,
