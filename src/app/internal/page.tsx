@@ -3,6 +3,7 @@ import { getSession } from '@/utils/session';
 
 export default async function TaskPage({ searchParams }: { searchParams: SearchParams }) {
   const { copilot, data } = await getSession(searchParams);
+  console.log("Data", data)
   const clients = await copilot?.listClients({});
   const clientNotificationsMap: any[] = [];
 
