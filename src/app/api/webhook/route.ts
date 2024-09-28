@@ -4,6 +4,7 @@ export async function POST(request: Request) {
   console.log('request', request)
   try {
     const body = await request.json();
+    console.log('body', body)
     const event = body.event;
     
     console.log("Received event:", event);
