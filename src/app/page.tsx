@@ -9,7 +9,8 @@ import { getSession } from '@/utils/session';
 export const revalidate = 180;
 
 async function Content({ searchParams }: { searchParams: SearchParams }) {
-  const data = await getSession(searchParams);
+  // const data = await getSession(searchParams);
+  const { copilot, data } = await getSession(searchParams);
   // Console log the data to see what's available
   // You can see these logs in the terminal where
   // you run `yarn dev`

@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button"
 
 // Create the TasksTable component
 const TasksTable = ({ notifications }: { notifications: any }) => {
-      console.log("notifications", notifications);
 
     return (
         <Table className="">
