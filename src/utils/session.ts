@@ -28,8 +28,10 @@ export async function getSession(searchParams: SearchParams) {
     client?: Awaited<ReturnType<typeof copilot.retrieveClient>>;
     company?: Awaited<ReturnType<typeof copilot.retrieveCompany>>;
     internalUser?: Awaited<ReturnType<typeof copilot.retrieveInternalUser>>;
+    clients?: Awaited<ReturnType<typeof copilot.listClients>>
   } = {
     workspace: await copilot.retrieveWorkspace(),
+    clients: await copilot.listClients({})
   };
   const tokenPayload = await copilot.getTokenPayload?.();
 
