@@ -57,12 +57,14 @@ async function fetchFreshData(copilot: any) {
 
       await Promise.all(
         batch.map(async (client: any) => {
+          console.log('hitting')
           const clientNotifications = await copilot.listNotifications({
             recipientId: client.id,
             includeRead: true,
           });
 
           if (clientNotifications?.data) {
+            console.log('hitting')
             for (const notification of clientNotifications.data) {
               clientNotificationsMap.push({
                 ClientId: client.id,
@@ -83,7 +85,7 @@ async function fetchFreshData(copilot: any) {
       );
 
       // Optional: Add a delay between each batch to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 100)); // 100ms delay between batches
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 100ms delay between batches
     }
   }
 
