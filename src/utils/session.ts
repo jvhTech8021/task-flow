@@ -15,12 +15,18 @@ export async function getSession(searchParams: SearchParams) {
   console.log('getting here', apiKey)
 
 
+  // const copilot = copilotApi({
+  //   apiKey: apiKey,
+  //   // token:
+  //   //   'token' in searchParams && typeof searchParams.token === 'string'
+  //   //     ? searchParams.token
+  //   //     : undefined,
+  // });
   const copilot = copilotApi({
-    apiKey: apiKey,
-    // token:
-    //   'token' in searchParams && typeof searchParams.token === 'string'
-    //     ? searchParams.token
-    //     : undefined,
+    apiKey: "1a250dc23f614bed979493b950490fbb.877ac187358f33a8",
+    token: "token" in searchParams && typeof searchParams.token === "string"
+      ? searchParams.token
+      : undefined,
   });
 
   console.log("copilotApi", copilotApi)
