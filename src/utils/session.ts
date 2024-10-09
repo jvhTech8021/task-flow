@@ -13,7 +13,7 @@ export async function getSession(searchParams: SearchParams) {
   const apiKey = need<string>(process.env.COPILOT_API_KEY);
 
   // console.log('getting here', apiKey)
-  
+
 
   const copilot = copilotApi({
     apiKey: apiKey,
@@ -23,6 +23,7 @@ export async function getSession(searchParams: SearchParams) {
         : undefined,
   });
 
+  console.log("copilotApi", copilotApi)
   const data: {
     workspace: Awaited<ReturnType<typeof copilot.retrieveWorkspace>>;
     client?: Awaited<ReturnType<typeof copilot.retrieveClient>>;

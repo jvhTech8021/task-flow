@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ notifications: clientNotificationsMap });
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 1000 });
   }
 }
 
@@ -56,8 +56,8 @@ async function fetchFreshData(copilot: any) {
       console.log('Total clients:', clients.data.length);
 
       // Process clients in chunks of 2
-      for (let i = 0; i < clients.data.length; i += 3) {
-        const clientPair = clients.data.slice(i, i + 3);
+      for (let i = 0; i < clients.data.length; i += 2) {
+        const clientPair = clients.data.slice(i, i + 2);
 
         // Process the two clients in parallel
         const promises = clientPair.map(async (client: any) => {
@@ -101,7 +101,7 @@ async function fetchFreshData(copilot: any) {
         await Promise.all(promises);
 
         // Delay for 1 second after each batch of clients
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
     }
 
