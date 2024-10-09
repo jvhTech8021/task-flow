@@ -28,6 +28,7 @@ const TasksFetcher = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log([process.env.COPILOT_API_KEY])
 
       const response = await fetch('/api/notifications', {
         method: 'GET',
