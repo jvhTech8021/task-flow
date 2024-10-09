@@ -60,7 +60,7 @@ async function fetchFreshData(copilot: any) {
         const clientPair = clients.data.slice(i, i + 3);
 
         // Process the two clients in parallel
-        const promises = clientPair.map(async (client) => {
+        const promises = clientPair.map(async (client: any) => {
           try {
             const [clientNotifications, company] = await Promise.all([
               copilot.listNotifications({
