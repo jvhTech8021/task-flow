@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Table,
     TableBody,
@@ -11,10 +11,15 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-// Create the TasksTable component
 const TasksTable = ({ notifications }: { notifications: any }) => {
-    // Maintain loading state for each notification
     const [loading, setLoading] = useState<{ [key: number]: boolean }>({});
+    const [lastReminded, setLastReminded] = useState<{ [key: number]: string | null }>({});
+
+    // Load last reminded times from local storage on mount
+    useEffect(() => {
+        const savedRemindedTimes = JSON.parse(localStorage.getItem("lastReminded") || "{}");
+        setLastReminded(savedRemindedTimes);
+    }, []);
 
     const handleSendReminder = async (index: number, details: {
         name: string,
@@ -24,7 +29,6 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
         createdAt: string,
         notification: string
     }) => {
-        // Set loading only for the current row
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
 
         const { name, email, company, body, createdAt, notification } = details;
@@ -47,6 +51,13 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
 
             if (response.ok) {
                 alert("Reminder sent!");
+                const now = new Date().toLocaleString();
+                
+                setLastReminded((prevLastReminded) => {
+                    const updatedLastReminded = { ...prevLastReminded, [index]: now };
+                    localStorage.setItem("lastReminded", JSON.stringify(updatedLastReminded));
+                    return updatedLastReminded;
+                });
             } else {
                 alert("Failed to send reminder.");
             }
@@ -54,7 +65,6 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
             console.error(error);
             alert("An error occurred.");
         } finally {
-            // Reset loading for the current row
             setLoading((prevLoading) => ({ ...prevLoading, [index]: false }));
         }
     };
@@ -70,6 +80,7 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
                     <TableHead className="border-2">Details</TableHead>
                     <TableHead className="border-2">Created At</TableHead>
                     <TableHead className="border-2">Reminders</TableHead>
+                    <TableHead className="border-2">Last Reminded</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,11 +107,12 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
                                             createdAt: notification.CreatedAt,
                                         })
                                     }
-                                    disabled={loading[index]} // Disable only the clicked row's button
+                                    disabled={loading[index]}
                                 >
                                     {loading[index] ? "Sending..." : "Remind"}
                                 </Button>
                             </TableCell>
+                            <TableCell>{lastReminded[index] || "Not reminded yet"}</TableCell>
                         </TableRow>
                     );
                 })}
@@ -109,5 +121,4 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
     );
 };
 
-// Export the component
 export default TasksTable;

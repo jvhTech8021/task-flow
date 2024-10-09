@@ -11,32 +11,31 @@ let lastUpdated: any = null;
 const CACHE_EXPIRATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export async function GET(request: Request) {
-  // try {
-  //   const url = new URL(request.url);
-  //   const searchParams = Object.fromEntries(url.searchParams.entries());
+  try {
+    const url = new URL(request.url);
+    const searchParams = Object.fromEntries(url.searchParams.entries());
 
-  //   const { data, copilot } = await getSession(searchParams);
+    const { data, copilot } = await getSession(searchParams);
 
-  //   if (!copilot) {
-  //     return NextResponse.json({ error: 'Copilot not available' }, { status: 500 });
-  //   }
+    if (!copilot) {
+      return NextResponse.json({ error: 'Copilot not available' }, { status: 500 });
+    }
 
-  //   const now = new Date().getTime();
-  //   if (cachedNotifications.length && lastUpdated && now - lastUpdated < CACHE_EXPIRATION) {
-  //     NextResponse.json({ notifications: cachedNotifications });
+    const now = new Date().getTime();
+    if (cachedNotifications.length && lastUpdated && now - lastUpdated < CACHE_EXPIRATION) {
+      NextResponse.json({ notifications: cachedNotifications });
 
 
-  //     return NextResponse.json({ notifications: cachedNotifications });
-  //   }
+      return NextResponse.json({ notifications: cachedNotifications });
+    }
 
-  //   const clientNotificationsMap = await fetchFreshData(copilot);
+    const clientNotificationsMap = await fetchFreshData(copilot);
 
-  //   return NextResponse.json({ notifications: clientNotificationsMap });
-  // } catch (error) {
-  //   console.error('Error fetching tasks:', error);
-  //   return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  // }
-  return NextResponse.json({ notifications: "look at this"})
+    return NextResponse.json({ notifications: clientNotificationsMap });
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
 // Function to fetch fresh data
