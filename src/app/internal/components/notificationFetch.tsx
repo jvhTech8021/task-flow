@@ -35,38 +35,38 @@ const TasksFetcher = () => {
         credentials: 'include',
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`Error: ${response.statusText}`);
+      // }
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      console.log("DATA", data)
+      // console.log("DATA", data)
 
-      // Compute TimeSinceCreation on the client
-      const updatedNotifications = data.notifications.map((notification: Notification) => {
-        const createdAt = new Date(notification.CreatedAt);
-        const now = new Date();
-        const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+      // // Compute TimeSinceCreation on the client
+      // const updatedNotifications = data.notifications.map((notification: Notification) => {
+      //   const createdAt = new Date(notification.CreatedAt);
+      //   const now = new Date();
+      //   const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
 
-        let timeSince = '';
-        if (diffInSeconds < 60) {
-          timeSince = `${diffInSeconds} seconds ago`;
-        } else if (diffInSeconds < 3600) {
-          const minutes = Math.floor(diffInSeconds / 60);
-          timeSince = `${minutes} minutes ago`;
-        } else if (diffInSeconds < 86400) {
-          const hours = Math.floor(diffInSeconds / 3600);
-          timeSince = `${hours} hours ago`;
-        } else {
-          const days = Math.floor(diffInSeconds / 86400);
-          timeSince = `${days} days ago`;
-        }
+      //   let timeSince = '';
+      //   if (diffInSeconds < 60) {
+      //     timeSince = `${diffInSeconds} seconds ago`;
+      //   } else if (diffInSeconds < 3600) {
+      //     const minutes = Math.floor(diffInSeconds / 60);
+      //     timeSince = `${minutes} minutes ago`;
+      //   } else if (diffInSeconds < 86400) {
+      //     const hours = Math.floor(diffInSeconds / 3600);
+      //     timeSince = `${hours} hours ago`;
+      //   } else {
+      //     const days = Math.floor(diffInSeconds / 86400);
+      //     timeSince = `${days} days ago`;
+      //   }
 
-        return { ...notification, TimeSinceCreation: timeSince };
-      });
+      //   return { ...notification, TimeSinceCreation: timeSince };
+      // });
 
-      setNotifications(updatedNotifications);
+      // setNotifications(updatedNotifications);
     } catch (err: any) {
       console.error('Failed to fetch notifications:', err);
       setError(err.message || 'Failed to fetch notifications');
@@ -75,23 +75,21 @@ const TasksFetcher = () => {
     }
   };
 
-  useEffect(() => {
-    // Initial fetch
-    fetchNotifications();
+  // useEffect(() => {
+  //   fetchNotifications();
 
-    // Set up polling every 10 minutes (600,000 milliseconds)
-    const intervalId = setInterval(() => {
-      fetchNotifications();
-    }, 600000); // 10 minutes
+  //   const intervalId = setInterval(() => {
+  //     fetchNotifications();
+  //   }, 600000); // 10 minutes
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
-  if (loading) return <div>Loading notifications...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // if (loading) return <div>Loading notifications...</div>;
+  // if (error) return <div>Error: {error}</div>;
 
-  return <TasksTable notifications={notifications} />;
+  // return <TasksTable notifications={notifications} />;
+  return <div>testing this out</div>
 };
 
 export default TasksFetcher;
