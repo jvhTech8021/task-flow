@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ notifications: clientNotificationsMap });
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 1000 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -101,7 +101,7 @@ async function fetchFreshData(copilot: any) {
         await Promise.all(promises);
 
         // Delay for 1 second after each batch of clients
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
 
