@@ -12,7 +12,7 @@ export async function getSession(searchParams: SearchParams) {
 
   const apiKey = need<string>(process.env.COPILOT_API_KEY);
 
-  // console.log('getting here', apiKey)
+  console.log('getting here', apiKey)
 
 
   const copilot = copilotApi({
