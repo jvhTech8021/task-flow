@@ -101,7 +101,7 @@ async function fetchFreshData(copilot: any) {
         await Promise.all(promises);
 
         // Delay for 1 second after each batch of clients
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
 

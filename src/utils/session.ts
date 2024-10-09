@@ -17,10 +17,10 @@ export async function getSession(searchParams: SearchParams) {
 
   const copilot = copilotApi({
     apiKey: apiKey,
-    token:
-      'token' in searchParams && typeof searchParams.token === 'string'
-        ? searchParams.token
-        : undefined,
+    // token:
+    //   'token' in searchParams && typeof searchParams.token === 'string'
+    //     ? searchParams.token
+    //     : undefined,
   });
 
   console.log("copilotApi", copilotApi)
