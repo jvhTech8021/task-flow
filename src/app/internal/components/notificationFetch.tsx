@@ -23,6 +23,7 @@ const TasksFetcher = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [res, setRes] = useState<any>()
 
   const fetchNotifications = async () => {
     try {
@@ -67,6 +68,7 @@ const TasksFetcher = () => {
       // });
 
       // setNotifications(updatedNotifications);
+      setRes(response)
     } catch (err: any) {
       console.error('Failed to fetch notifications:', err);
       setError(err.message || 'Failed to fetch notifications');
@@ -75,21 +77,21 @@ const TasksFetcher = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchNotifications();
+  useEffect(() => {
+    fetchNotifications();
 
-  //   const intervalId = setInterval(() => {
-  //     fetchNotifications();
-  //   }, 600000); // 10 minutes
+    const intervalId = setInterval(() => {
+      fetchNotifications();
+    }, 600000); // 10 minutes
 
-  //   return () => clearInterval(intervalId);
-  // }, []);
+    return () => clearInterval(intervalId);
+  }, []);
 
   // if (loading) return <div>Loading notifications...</div>;
   // if (error) return <div>Error: {error}</div>;
 
   // return <TasksTable notifications={notifications} />;
-  return <div>testing this out</div>
+  return <div>{res}</div>
 };
 
 export default TasksFetcher;
