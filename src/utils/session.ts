@@ -23,7 +23,7 @@ export async function getSession(searchParams: SearchParams) {
   //   //     : undefined,
   // });
   const copilot = copilotApi({
-    apiKey: "1a250dc23f614bed979493b950490fbb.877ac187358f33a8",
+    apiKey: "e240eee14a4c47c682f5b3622fcba6b0.63fcc554e8beff73",
     token: "token" in searchParams && typeof searchParams.token === "string"
       ? searchParams.token
       : undefined,
