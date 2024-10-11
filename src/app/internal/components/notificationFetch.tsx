@@ -19,7 +19,7 @@ interface Notification {
   email: string;
 }
 
-const TasksFetcher = () => {
+const TasksFetcher = ({searchParams}: any) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +29,7 @@ const TasksFetcher = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/notifications', {
+      const response = await fetch(`/api/notifications?token=${searchParams.token}`, {
         method: 'GET',
         credentials: 'include',
       });
