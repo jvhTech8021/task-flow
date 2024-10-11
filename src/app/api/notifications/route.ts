@@ -14,6 +14,7 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const searchParams = Object.fromEntries(url.searchParams.entries());
+    console.log('searchParams', searchParams)
 
     const { data, copilot } = await getSession(searchParams);
 
