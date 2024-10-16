@@ -1,5 +1,3 @@
-// app/internal/components/TasksFetcher.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -87,7 +85,14 @@ const TasksFetcher = ({searchParams}: any) => {
     return () => clearInterval(intervalId);
   }, []);
 
-  if (loading) return <div>Loading notifications...</div>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white">
+        Loading notifications...
+      </div>
+    );
+  }
+  
   if (error) return <div>Error: {error}</div>;
 
   return <TasksTable notifications={notifications} />;

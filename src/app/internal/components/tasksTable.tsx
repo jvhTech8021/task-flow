@@ -21,8 +21,21 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import {
+    ColumnDef,
+    SortingState,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+
 import CloseIcon from "@/components/icons/x";
 import Bell from "@/components/icons/bell";
+import Sortdown from "@/components/icons/sortDown";
+import Sortup from "@/components/icons/sortUp";
+import Checkmark from "@/components/icons/checkmark";
 
 const TasksTable = ({ notifications }: { notifications: any }) => {
     const [loading, setLoading] = useState<{ [key: number]: boolean }>({});
@@ -30,16 +43,71 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
     const [notes, setNotes] = useState<{ [key: number]: string }>({});
     const [showConfig, setShowConfig] = useState<{ [key: number]: boolean }>({});
     const [priority, setPriority] = useState<{ [key: number]: string }>({});
+    const [sent, setSent] = useState<{ [key: number]: boolean }>({});
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     useEffect(() => {
         const savedRemindedTimes = JSON.parse(localStorage.getItem("lastReminded") || "{}");
         setLastReminded(savedRemindedTimes);
     }, []);
 
+    const columns: ColumnDef<any>[] = [
+        {
+            accessorKey: 'Name',
+            header: 'Name',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'Email',
+            header: 'Email',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'Company.name',
+            header: 'Company',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'Notification',
+            header: 'Notification Message',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'details',
+            header: 'Details',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'CreatedAt',
+            header: 'Created At',
+            cell: info => info.getValue(),
+        },
+        {
+            accessorKey: 'isRead',
+            header: 'Read',
+            cell: info => (info.getValue() ? "Read" : "Unread"),
+        },
+        {
+            accessorKey: 'lastReminded',
+            header: 'Last Reminded',
+            cell: info => lastReminded[info.row.index] || "Not reminded yet",
+        }
+    ];
+
+    const table = useReactTable({
+        data: notifications,
+        columns,
+        state: { sorting },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+    });
+
     const handleSendReminder = async (index: number, details: any) => {
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
+        console.log('details', details)
 
-        const { name, email, company, body, createdAt, notification } = details;
+        const { Name, Email, Company, NotificationEmailBody, CreatedAt, Notification } = details;
         const note = notes[index] || "";
         const selectedPriority = priority[index] || "none";
 
@@ -48,19 +116,23 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    toName: name,
-                    toEmail: email,
-                    toCompany: company,
-                    notification,
-                    body,
-                    createdAt,
+                    toName: Name,
+                    toEmail: Email,
+                    toCompany: Company.name,
+                    Notification: Notification,
+                    NotificationEmailBody: NotificationEmailBody,
+                    CreatedAt: CreatedAt,
                     note,
                     priority: selectedPriority,
                 }),
             });
 
             if (response.ok) {
-                alert("Reminder sent!");
+                // alert("Reminder sent!");
+                setSent((prevShowConfig) => ({ ...prevShowConfig, [index]: true }))
+                setTimeout(() => {
+                    setSent((prevShowConfig) => ({ ...prevShowConfig, [index]: false }))
+                }, 1500)
                 const now = new Date().toLocaleString();
 
                 setLastReminded((prevLastReminded) => {
@@ -85,123 +157,94 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
     return (
         <Table className="">
             <TableHeader>
-                <TableRow className="">
-                    <TableHead className="border-2">Name</TableHead>
-                    <TableHead className="border-2">Email</TableHead>
-                    <TableHead className="border-2">Company</TableHead>
-                    <TableHead className="border-2">Notification Message</TableHead>
-                    <TableHead className="border-2">Details</TableHead>
-                    <TableHead className="border-2">Created At</TableHead>
-                    <TableHead className="border-2">Read</TableHead>
-                    <TableHead className="border-2">{ }</TableHead>
-                    <TableHead className="border-2">Last Reminded</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map(headerGroup => (
+                    <TableRow key={headerGroup.id} className="hover:">
+                        {headerGroup.headers.map(header => (
+                            <TableHead
+                                key={header.id}
+                                className="cursor-pointer text-white hover:underline"
+                                onClick={header.column.getToggleSortingHandler()}
+                            >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {{
+                                    asc: <Sortup></Sortup>,
+                                    desc: <Sortdown></Sortdown>,
+                                }[header.column.getIsSorted() as string] ?? null}
+                            </TableHead>
+                        ))}
+                    </TableRow>
+                ))}
             </TableHeader>
             <TableBody>
-                {notifications.map((notification: any, index: number) => {
-                    const taskName = notification.details?.match(/(?<=‘)(.*?)(?=’)/)?.[0];
-
-                    return (
-                        <React.Fragment key={index}>
-                            <TableRow className="">
-                                <TableCell>{notification.Name}</TableCell>
-                                <TableCell>{notification.Email}</TableCell>
-                                <TableCell>{notification.Company.name}</TableCell>
-                                <TableCell>{notification.Notification}</TableCell>
-                                <TableCell>{taskName || notification.details}</TableCell>
-                                <TableCell>{notification.CreatedAt}</TableCell>
-                                <TableCell>{notification.isRead ? "Read" : "Unread"}</TableCell>
-                                <TableCell className="w-[10%]">
-
-                                    {/* {showConfig[index] && */}
-                                    {/* {!showConfig[index] && <Bell></Bell>} */}
-                                    {/* {!showConfig[index] && */}
-                                    <div className="flex flex-row gap-2">
-                                        <div className="w-full">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() =>
-                                                    handleSendReminder(index, {
-                                                        name: notification.Name,
-                                                        email: notification.Email,
-                                                        notification: notification.Notification,
-                                                        company: notification.Company.name,
-                                                        body: taskName || notification.details,
-                                                        createdAt: notification.CreatedAt,
-                                                        priority: priority,
-                                                        note: notes
-                                                    })
-                                                }
-                                                disabled={loading[index]}
-                                                className="w-full border-2"
-                                            >
-                                                {loading[index] ? "Sending..." : "Send Reminder"}
-                                            </Button>
-                                        </div>
-                                        <div className="w-full">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() =>
-                                                    setShowConfig((prevShowConfig) => ({
-                                                        ...prevShowConfig,
-                                                        [index]: !prevShowConfig[index],
-                                                    }))
-                                                }
-                                                className="w-full border-2"
-                                            >
-                                                {showConfig[index] ? <CloseIcon></CloseIcon> : <Bell></Bell>}
-                                            </Button>
-                                        </div>
-
-                                    </div>
-                                    {/* } */}
-
-
-                                    {showConfig[index] &&
-                                        <div className="pt-2">
-                                            <td colSpan={9} className="transition-all duration-300 ease-in-out">
-                                                <div className="rounded-md space-y-3">
-                                                    <Select onValueChange={(value) =>
-                                                        setPriority((prev) => ({
-                                                            ...prev,
-                                                            [index]: value,
-                                                        }))
-                                                    }>
-                                                        <SelectTrigger className="text-black">
-                                                            <SelectValue placeholder="Select a Priority" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Importance</SelectLabel>
-                                                                <SelectItem value="none">None</SelectItem>
-                                                                <SelectItem value="low">Low</SelectItem>
-                                                                <SelectItem value="medium">Medium</SelectItem>
-                                                                <SelectItem value="high">High</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <Input
-                                                        type="text"
-                                                        placeholder="Add a note"
-                                                        value={notes[index] || ""}
-                                                        onChange={(e) =>
-                                                            setNotes((prevNotes) => ({
-                                                                ...prevNotes,
-                                                                [index]: e.target.value,
-                                                            }))
-                                                        }
-                                                        className="w-full"
-                                                    />
-                                                </div>
-                                            </td>
-                                        </div>
+                {table.getRowModel().rows.map(row => (
+                    <TableRow key={row.id} className="">
+                        {row.getVisibleCells().map(cell => (
+                            <TableCell key={cell.id} className="text-slate-300">
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                        ))}
+                        <TableCell className="w-[10%]">
+                            <div className="flex flex-row gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => handleSendReminder(row.index, notifications[row.index])}
+                                    disabled={loading[row.index]}
+                                >
+                                    {loading[row.index] ? "Sending..." : sent[row.index] ? <div className="pl-9 w-24"><Checkmark/></div> : "Send Reminder"}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        setShowConfig((prevShowConfig) => ({
+                                            ...prevShowConfig,
+                                            [row.index]: !prevShowConfig[row.index],
+                                        }))
                                     }
-                                </TableCell>
-                                <TableCell>{lastReminded[index] || "Not reminded yet"}</TableCell>
-                            </TableRow>
-                        </React.Fragment>
-                    );
-                })}
+                                >
+                                    {showConfig[row.index] ? <CloseIcon /> : <Bell />}
+
+                                </Button>
+                            </div>
+                            {showConfig[row.index] && (
+                                <div className="pt-2">
+                                    <div className="rounded-md space-y-3">
+                                        <Select onValueChange={(value) =>
+                                            setPriority((prev) => ({
+                                                ...prev,
+                                                [row.index]: value,
+                                            }))
+                                        }>
+                                            <SelectTrigger className="text-slate-300">
+                                                <SelectValue placeholder="Select a Priority" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Importance</SelectLabel>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    <SelectItem value="low">Low</SelectItem>
+                                                    <SelectItem value="medium">Medium</SelectItem>
+                                                    <SelectItem value="high">High</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        <Input
+                                            type="text"
+                                            placeholder="Add a note"
+                                            value={notes[row.index] || ""}
+                                            onChange={(e) =>
+                                                setNotes((prevNotes) => ({
+                                                    ...prevNotes,
+                                                    [row.index]: e.target.value,
+                                                }))
+                                            }
+                                            className="w-full text-slate-300"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

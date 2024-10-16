@@ -51,8 +51,8 @@ async function fetchFreshData(copilot: any) {
       console.log('Total clients:', clients.data.length);
 
       // Process clients in chunks of 2
-      for (let i = 0; i < clients.data.length; i += 2) {
-        const clientPair = clients.data.slice(i, i + 2);
+      for (let i = 0; i < clients.data.length; i += 10) {
+        const clientPair = clients.data.slice(i, i + 10);
 
         // Process the two clients in parallel
         const promises = clientPair.map(async (client: any) => {

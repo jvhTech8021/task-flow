@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
               <span class="priority-icon">!</span> ${priority === 'high' ? 'High Priority' : priority === 'medium' ? 'Medium Priority' : 'Low Priority'}
           </div>
           <p class="message">
-              ${note}<br><br>
+              ${note ? note : ""}<br><br>
               There is an item waiting for you in your Windstone dashboard:<br><br>
               ${body}<br><br>
               <a href="https://portal.windstonefinancial.com/" class="button">Click here to access them</a>
