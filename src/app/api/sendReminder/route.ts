@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         console.log('note', note)
 
         const msg = {
-            to: "vanhornjoe8@gmail.com", // recipient from request body
+            to: "colin@windstonefinancial.com", // recipient from request body
             from: 'jvhtechinnovation@gmail.com', // verified sender
             subject: `Windstone Financial Reminder: ${notification}`,
             text: body,
