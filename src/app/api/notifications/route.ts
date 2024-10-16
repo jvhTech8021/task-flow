@@ -46,59 +46,90 @@ async function fetchFreshData(copilot: any) {
   try {
     const clients = await copilot.listClients({});
     const clientNotificationsMap: any[] = [];
+    const notifications = await copilot.listNotifications({})
+    console.log("notifications", notifications.data)
+    // console.log("clients", clients)
 
     if (clients?.data?.length) {
-      console.log('Total clients:', clients.data.length);
+      notifications.data.forEach(async (notification: any) => {
+        // console.log("notification", notification.recipientId)
+        const currentClient = clients.data.filter((client: { id: string }) => client.id === notification.recipientId);
+        // console.log('client', currentClient)
+        // const company = await copilot.retrieveCompany({ id: currentClient.companyId })
+        // const client = {
+        //   clientName: `${clients.find((client: { id: string }) => client.id === notification.recipientId)?.givenName ?? 'N/A'} ${clients.find((client: { id: string }) => client.id === notification.recipientId)?.familyName ?? 'N/A'}`,
+        //   email: client.email
 
-      // Process clients in chunks of 2
-      for (let i = 0; i < clients.data.length; i += 2) {
-        const clientPair = clients.data.slice(i, i + 2);
-
-        // Process the two clients in parallel
-        const promises = clientPair.map(async (client: any) => {
-          try {
-            const [clientNotifications, company] = await Promise.all([
-              copilot.listNotifications({
-                recipientId: client.id,
-                includeRead: true,
-              }),
-              copilot.retrieveCompany({ id: client.companyId }),
-            ]);
-
-            const notificationCount = clientNotifications?.data?.length || 0;
-
-            // Skip this client if they have no notifications
-            if (notificationCount === 0) return;
-
-            console.log("Notifications for client", client.id, ":", notificationCount);
-
-            for (const notification of clientNotifications.data) {
-              clientNotificationsMap.push({
-                ClientId: client.id,
-                Name: `${client.givenName ?? ''} ${client.familyName ?? ''}`,
-                Email: client.email ?? 'N/A',
-                Company: company,
-                Status: client.status ?? 'Unknown',
-                Notification: notification.deliveryTargets?.inProduct?.title ?? 'N/A',
-                CreatedAt: new Date(notification.createdAt).toLocaleString(),
-                isRead: notification.deliveryTargets?.inProduct?.isRead ?? false,
-                TimeSinceCreation: calculateTimeSince(notification.createdAt),
-                details: notification.deliveryTargets?.inProduct?.body ?? '',
-                NotificationEmailBody: notification.deliveryTargets?.email?.body ?? '',
-              });
-            }
-          } catch (error) {
-            console.error(`Error processing client ${client.id}:`, error);
-          }
-        });
-
-        // Wait for both client promises to complete before proceeding to the next pair
-        await Promise.all(promises);
-
-        // Delay for 1 second after each batch of clients
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
+        // }
+        // const item = {
+        //   ClientId: notification.recipientId,
+        //   Name: `${currentClient.givenName} ${currentClient.familyName}`,
+        //   Email: currentClient.email ?? 'N/A',
+        //   Company: "company",
+        //   Status: currentClient.status ?? 'Unknown',
+        //   Notification: notification.deliveryTargets?.inProduct?.title ?? 'N/A',
+        //   CreatedAt: new Date(notification.createdAt).toLocaleString(),
+        //   isRead: notification.deliveryTargets?.inProduct?.isRead ?? false,
+        //   TimeSinceCreation: calculateTimeSince(notification.createdAt),
+        //   details: notification.deliveryTargets?.inProduct?.body ?? '',
+        //   NotificationEmailBody: notification.deliveryTargets?.email?.body ?? '',
+        // }
+        // clientNotificationsMap.push(item)
+      })
     }
+
+    // if (clients?.data?.length) {
+    //   console.log('Total clients:', clients.data.length);
+
+    //   // Process clients in chunks of 2
+    //   for (let i = 0; i < clients.data.length; i += 2) {
+    //     const clientPair = clients.data.slice(i, i + 2);
+
+    //     // Process the two clients in parallel
+    //     const promises = clientPair.map(async (client: any) => {
+    //       try {
+    //         const [clientNotifications, company] = await Promise.all([
+    //           copilot.listNotifications({
+    //             recipientId: client.id,
+    //             includeRead: true,
+    //           }),
+    //           copilot.retrieveCompany({ id: client.companyId }),
+    //         ]);
+
+    //         const notificationCount = clientNotifications?.data?.length || 0;
+
+    //         // Skip this client if they have no notifications
+    //         if (notificationCount === 0) return;
+
+    //         console.log("Notifications for client", client.id, ":", notificationCount);
+
+    //         for (const notification of clientNotifications.data) {
+    //           clientNotificationsMap.push({
+    //             ClientId: client.id,
+    //             Name: `${client.givenName ?? ''} ${client.familyName ?? ''}`,
+    //             Email: client.email ?? 'N/A',
+    //             Company: company,
+    //             Status: client.status ?? 'Unknown',
+    //             Notification: notification.deliveryTargets?.inProduct?.title ?? 'N/A',
+    //             CreatedAt: new Date(notification.createdAt).toLocaleString(),
+    //             isRead: notification.deliveryTargets?.inProduct?.isRead ?? false,
+    //             TimeSinceCreation: calculateTimeSince(notification.createdAt),
+    //             details: notification.deliveryTargets?.inProduct?.body ?? '',
+    //             NotificationEmailBody: notification.deliveryTargets?.email?.body ?? '',
+    //           });
+    //         }
+    //       } catch (error) {
+    //         console.error(`Error processing client ${client.id}:`, error);
+    //       }
+    //     });
+
+    //     // Wait for both client promises to complete before proceeding to the next pair
+    //     await Promise.all(promises);
+
+    //     // Delay for 1 second after each batch of clients
+    //     await new Promise((resolve) => setTimeout(resolve, 100));
+    //   }
+    // }
 
     // Update cache and timestamp
     cachedNotifications = clientNotificationsMap;
