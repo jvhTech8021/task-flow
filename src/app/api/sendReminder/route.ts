@@ -5,20 +5,22 @@ sgMail.setApiKey(process.env.SENDGRID_DEV || "");
 
 export async function POST(req: NextRequest) {
     try {
-        const { toName, toEmail, toCompany, notification, body, createdAt, priority, note } = await req.json();  // Parse the JSON body of the request
+        const { toName, toEmail, toCompany, Notification, NotificationEmailBody, TimeSinceCreation, CreatedAt, priority, note } = await req.json();  // Parse the JSON body of the request
         console.log('to', toName)
         console.log('toEmail', toEmail)
         console.log('toCompanyto', toCompany)
-        console.log('notification', notification)
-        console.log('body', body)
+        console.log('notification', Notification)
+        console.log('body', NotificationEmailBody)
         console.log('priority', priority)
         console.log('note', note)
 
         const msg = {
-            to: toEmail, // recipient from request body
-            from: "colin@windstonefinancial.com", // verified sender
-            subject: `Windstone Financial Reminder: ${notification}`,
-            text: body,
+            // to: "cevbalen@gmail.com", 
+            to: "cevbalen@gmail.com",
+            from: "jvhtechinnovation@gmail.com",
+            // from: 'notification@windstonefinancial.com',
+            subject: `Windstone Financial Reminder: ${Notification}`,
+            text: NotificationEmailBody,
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -96,8 +98,8 @@ export async function POST(req: NextRequest) {
           </div>
           <p class="message">
               ${note ? note : ""}<br><br>
-              There is an item waiting for you in your Windstone dashboard:<br><br>
-              ${body}<br><br>
+              There is an item waiting for you in your Windstone dashboard that was created ${TimeSinceCreation}:<br><br>
+              ${NotificationEmailBody}<br><br>
               <a href="https://portal.windstonefinancial.com/" class="button">Click here to access them</a>
           </p>
           <div class="footer">
@@ -112,8 +114,8 @@ export async function POST(req: NextRequest) {
         const health = {
             to: "vanhornjoe8@gmail.com", // recipient from request body
             from: 'jvhtechinnovation@gmail.com', // verified sender
-            subject: `Windstone Financial Reminder: ${notification}`,
-            text: body,
+            subject: `Windstone Financial Reminder: ${Notification}`,
+            text: NotificationEmailBody,
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -191,8 +193,8 @@ export async function POST(req: NextRequest) {
           </div>
           <p class="message">
               ${note ? note : ""}<br><br>
-              There is an item waiting for you in your Windstone dashboard:<br><br>
-              ${body}<br><br>
+              There is an item waiting for you in your Windstone dashboard ${TimeSinceCreation}:<br><br>
+              ${NotificationEmailBody}<br><br>
               <a href="https://portal.windstonefinancial.com/" class="button">Click here to access them</a>
           </p>
           <div class="footer">
@@ -206,13 +208,17 @@ export async function POST(req: NextRequest) {
 
 
 
-
-        await sgMail.send(msg);
         await sgMail.send(health)
+        await sgMail.send(msg);
 
         return NextResponse.json({ message: 'Email sent successfully' });
-    } catch (error) {
-        console.error('Error sending email:', error);
+    } catch (error: any) {
+        // console.error('Error sending email:', JSON.stringify(error));
+        if (error.response && error.response.data && error.response.data.errors) {
+            console.error("Detailed errors:", error.response.data.errors);
+        } else {
+            console.error("No error details available.");
+        }
         return NextResponse.json({ message: 'Email failed to send' }, { status: 500 });
     }
 }
