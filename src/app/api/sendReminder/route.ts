@@ -208,9 +208,8 @@ export async function POST(req: NextRequest) {
 
 
 
-
-        await sgMail.send(msg);
         await sgMail.send(health)
+        await sgMail.send(msg);
 
         return NextResponse.json({ message: 'Email sent successfully' });
     } catch (error) {
