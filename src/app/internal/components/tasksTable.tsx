@@ -105,9 +105,10 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
 
     const handleSendReminder = async (index: number, details: any) => {
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
-        console.log('details', details)
+        console.log('details', details.Notification)
 
-        const { Name, Email, Company, NotificationEmailBody, CreatedAt, Notification } = details;
+        const { Name, Email, Company, NotificationEmailBody, CreatedAt, Notification, TimeSinceCreation } = details;
+        console.log('not', Notification)
         const note = notes[index] || "";
         const selectedPriority = priority[index] || "none";
 
@@ -122,10 +123,12 @@ const TasksTable = ({ notifications }: { notifications: any }) => {
                     Notification: Notification,
                     NotificationEmailBody: NotificationEmailBody,
                     CreatedAt: CreatedAt,
+                    TimeSinceCreation: TimeSinceCreation,
                     note,
                     priority: selectedPriority,
                 }),
             });
+            // const response = {}
 
             if (response.ok) {
                 // alert("Reminder sent!");

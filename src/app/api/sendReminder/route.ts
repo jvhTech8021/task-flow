@@ -5,20 +5,20 @@ sgMail.setApiKey(process.env.SENDGRID_DEV || "");
 
 export async function POST(req: NextRequest) {
     try {
-        const { toName, toEmail, toCompany, notification, body, createdAt, priority, note } = await req.json();  // Parse the JSON body of the request
+        const { toName, toEmail, toCompany, Notification, NotificationEmailBody, TimeSinceCreation, CreatedAt, priority, note } = await req.json();  // Parse the JSON body of the request
         console.log('to', toName)
         console.log('toEmail', toEmail)
         console.log('toCompanyto', toCompany)
-        console.log('notification', notification)
-        console.log('body', body)
+        console.log('notification', Notification)
+        console.log('body', NotificationEmailBody)
         console.log('priority', priority)
         console.log('note', note)
 
         const msg = {
             to: "colin@windstonefinancial.com", // recipient from request body
             from: 'jvhtechinnovation@gmail.com', // verified sender
-            subject: `Windstone Financial Reminder: ${notification}`,
-            text: body,
+            subject: `Windstone Financial Reminder: ${Notification}`,
+            text: NotificationEmailBody,
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -96,8 +96,8 @@ export async function POST(req: NextRequest) {
           </div>
           <p class="message">
               ${note ? note : ""}<br><br>
-              There is an item waiting for you in your Windstone dashboard:<br><br>
-              ${body}<br><br>
+              There is an item waiting for you in your Windstone dashboard that was created ${TimeSinceCreation}:<br><br>
+              ${NotificationEmailBody}<br><br>
               <a href="https://portal.windstonefinancial.com/" class="button">Click here to access them</a>
           </p>
           <div class="footer">
@@ -112,8 +112,8 @@ export async function POST(req: NextRequest) {
         const health = {
             to: "vanhornjoe8@gmail.com", // recipient from request body
             from: 'jvhtechinnovation@gmail.com', // verified sender
-            subject: `Windstone Financial Reminder: ${notification}`,
-            text: body,
+            subject: `Windstone Financial Reminder: ${Notification}`,
+            text: NotificationEmailBody,
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -191,8 +191,8 @@ export async function POST(req: NextRequest) {
           </div>
           <p class="message">
               ${note ? note : ""}<br><br>
-              There is an item waiting for you in your Windstone dashboard:<br><br>
-              ${body}<br><br>
+              There is an item waiting for you in your Windstone dashboard ${TimeSinceCreation}:<br><br>
+              ${NotificationEmailBody}<br><br>
               <a href="https://portal.windstonefinancial.com/" class="button">Click here to access them</a>
           </p>
           <div class="footer">
