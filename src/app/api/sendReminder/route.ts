@@ -212,8 +212,13 @@ export async function POST(req: NextRequest) {
         await sgMail.send(msg);
 
         return NextResponse.json({ message: 'Email sent successfully' });
-    } catch (error) {
-        console.error('Error sending email:', error);
+    } catch (error: any) {
+        // console.error('Error sending email:', JSON.stringify(error));
+        if (error.response && error.response.data && error.response.data.errors) {
+            console.error("Detailed errors:", error.response.data.errors);
+        } else {
+            console.error("No error details available.");
+        }
         return NextResponse.json({ message: 'Email failed to send' }, { status: 500 });
     }
 }
