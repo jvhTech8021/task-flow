@@ -16,9 +16,9 @@ export async function POST(req: NextRequest) {
 
         const msg = {
             // to: "cevbalen@gmail.com", 
-            to: "cevbalen@gmail.com",
-            from: "jvhtechinnovation@gmail.com",
-            // from: 'notification@windstonefinancial.com',
+            to: "jvhtechinnovation@gmail.com",
+            // from: "jvhtechinnovation@gmail.com",
+            from: 'notification@windstonefinancial.com',
             subject: `Windstone Financial Reminder: ${Notification}`,
             text: NotificationEmailBody,
             html: `<!DOCTYPE html>
