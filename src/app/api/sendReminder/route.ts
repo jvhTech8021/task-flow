@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             to: toEmail,
             from: 'notification@windstonefinancial.com',
             subject: `Windstone Financial Reminder: ${Notification}`,
-            text: NotificationEmailBody,
+            text: NotificationEmailBody ? NotificationEmailBody : "N/A",
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
             to: "vanhornjoe8@gmail.com", // recipient from request body
             from: 'notification@windstonefinancial.com', // verified sender
             subject: `Windstone Financial Reminder: ${Notification}`,
-            text: NotificationEmailBody,
+            text: NotificationEmailBody ? NotificationEmailBody : "N/A",
             html: `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -213,10 +213,10 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: 'Email sent successfully' });
     } catch (error: any) {
         // console.error('Error sending email:', JSON.stringify(error));
-        if (error.response && error.response.data && error.response.data.errors) {
-            console.error("Detailed errors:", error.response.data.errors);
+        if (error.response && error.response.body && error.response.body.errors) {
+            console.error("Detailed errors:", error.response.body.errors);
         } else {
-            console.error("No error details available.");
+            console.error("No error details available.", error.response.body);
         }
         return NextResponse.json({ message: 'Email failed to send' }, { status: 500 });
     }

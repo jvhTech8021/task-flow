@@ -42,7 +42,7 @@ const TasksFetcher = ({ searchParams }: any) => {
 
       // Compute TimeSinceCreation on the client
       const updatedNotifications = data.notifications
-        .filter((notification: Notification) => notification.Email !== 'jvhtechinnovation88@gmail.com')
+        .filter((notification: Notification) => notification.Email !== 'jvhtechinnovation@gmail.com')
         .map((notification: Notification) => {
           const createdAt = new Date(notification.CreatedAt);
           const now = new Date();
